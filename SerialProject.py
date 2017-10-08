@@ -23,13 +23,13 @@ for f in filecontent:
 		data=myfile.read().replace('\n', '')
 		dataset.append(data)
 #Luego de obtener el texto de cada documento se pasa a un vector con el cual analizaremos la similaridad
-num_clusters =3
+num_clusters =5
 cluster_paragraphs(dataset, num_clusters,filecontent)
 clusters = cluster_paragraphs(dataset, num_clusters,filecontent)
 
 cont = 0
 for group in clusters:
-	print('Group {0}\n'.format(cont))
+	print('\nGroup {0}'.format(cont))
 	print '\n'.join(t for t in clusters[cont])
 	cont = cont + 1
 print '\n\n\n'
