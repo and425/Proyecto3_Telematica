@@ -8,7 +8,8 @@ import os
 #Parte para ver todos los archivos tipo txt y guardarlos en una lista
 dataset =[]
 filecontent = []
-files = [f for f in os.listdir('.') if os.path.isfile(f)]
+path ='./txt'
+files = [f for f in os.listdir(path) if os.path.split(f)]
 for f in files:
 	if f.endswith(".txt"):
 		filecontent.append(f)
@@ -17,7 +18,8 @@ for x in filecontent:
 #Vamos a ver como pasar el contenido del txt para poder analizarlo
 
 for f in filecontent:
-	with open(f, 'r') as myfile:
+	j = os.path.join(path, f)
+	with open(j, 'r') as myfile:
 		data=myfile.read().replace('\n', '')
 		dataset.append(data)
 #Luego de obtener el texto de cada documento se pasa a un vector con el cual analizaremos la similaridad
