@@ -3,7 +3,9 @@
 
 from vectorizer import cluster_paragraphs
 import os
+import time
 
+start_time = time.time()
 #Parte para ver todos los archivos tipo txt y guardarlos en una lista
 dataset =[]
 filecontent = []
@@ -33,3 +35,4 @@ for group in clusters:
 	print '\n'.join(t for t in clusters[cont])
 	cont = cont + 1
 print '\n\n\n'
+print("The execution time was %s seconds" % (time.time() - start_time))
