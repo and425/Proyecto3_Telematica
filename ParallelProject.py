@@ -32,10 +32,14 @@ for d in data[rank]:
         comm.send(d,dest=0)
     else:
         dataset.append(d)
+if rank != 0:
+    comm.send(None,dest=0)
 
 if rank == 0:
-    for i in range(size):
+    while True:
         data = comm.recv(source=MPI.ANY_SOURCE)
+        if data == None:
+            break
         dataset.append(data)
 
 print("Rank ",rank," The execution time was %s seconds" % (time.time() - start_time))
