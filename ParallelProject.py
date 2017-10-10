@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from mpi4py import MPI
-from vectorizer import cluster_paragraphs
+from Pvectorizer import cluster_paragraphs
 import os
 import time
 import numpy
@@ -50,6 +50,16 @@ if rank == 0:
         #    print "paso algo"
         #    break
         dataset.append(newdata)
+        print dataset
+        num_clusters =8
+        cluster_paragraphs(dataset, num_clusters,filecontent)
+        clusters = cluster_paragraphs(dataset, num_clusters,filecontent)
+        cont = 0
+        for group in clusters:
+            print('\nGroup {0}'.format(cont))
+            print '\n'.join(t for t in clusters[cont])
+            cont = cont + 1
+        print '\n\n\n'
       
 print("Rank ",rank," The execution time was %s seconds" % (time.time() - start_time))
 #print dataset
