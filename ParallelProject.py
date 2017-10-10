@@ -24,22 +24,32 @@ if rank == 0:
 else:
     data = None
 
-data = comm.bcast(filecontentSplited, root=0)
-for d in data[rank]:
+data = comm.scatter(filecontentSplited, root=0)
+#comm.Barrier()
+#print "im rank" , rank, "and my data is ", data
+
+for d in data:
     j = os.path.join(path, d)
     d=open(j, 'r').read().replace('\n', '')
+    '''
     if rank != 0:
-        comm.send(d,dest=0)
+        
+        #comm.send(d,dest=0)
     else:
         dataset.append(d)
-if rank != 0:
-    comm.send(None,dest=0)
+    '''
+#if rank != 0:
+#    comm.send(None,dest=0)
+newdata = comm.gather(d, root = 0)
+#dataset = dataset.append(d)
 
 if rank == 0:
-    while True:
-        data = comm.recv(source=MPI.ANY_SOURCE)
-        if data == None:
-            break
-        dataset.append(data)
-
+    #while True:
+        #data = comm.recv(source=MPI.ANY_SOURCE)
+        #if data == None:
+        #    print "paso algo"
+        #    break
+        dataset.append(newdata)
+      
 print("Rank ",rank," The execution time was %s seconds" % (time.time() - start_time))
+#print dataset
