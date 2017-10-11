@@ -5,15 +5,23 @@ from mpi4py import MPI
 from similarity import similarity
 import time
 import random
+import numpy
+import os
+
+comm = MPI.COMM_WORLD
+rank = comm.Get_rank()
+size = comm.Get_size()
 
 class KMeans(object):
     """K-Means clustering. Uses cosine similarity as the distance function."""
 
     def __init__(self, k, vectors):
+        print "im rank", rank, "with vector size", len(vectors)
         assert len(vectors) >= k
         self.centers = random.sample(vectors, k)
         self.clusters = [[] for c in self.centers]
         self.vectors = vectors
+        comm.Barrier()
 
     def update_clusters(self):
         """Determine which cluster center each `self.vector` is closest to."""
@@ -23,16 +31,24 @@ class KMeans(object):
             center = max(self.centers, key=similarity_to_vector)
             return self.centers.index(center)
 
-        self.clusters = [[] for c in self.centers]
-        vectorsSplited = numpy.array_split(numpy.array(vectors),size)
-        data = comm.scatter(vectorsSplited, root=0)
-        for vector in data:
-             index = closest_center_index(vector)
-             self.clusters[index].append(vector)
-        newdata = comm.gather(self.clusters, root = 0)
-        if rank == 0:
-            self.clusters.append(newdata)
-            
+        self.clusters = [[] for c in self.centers]    
+
+        pos = rank
+        while pos < len(self.vectors):
+            if self.vectors[pos] != None:
+                index = closest_center_index(self.vectors[pos])
+                self.clusters[index].append(self.vectors[pos])
+                pos += size
+                #self.vectors[pos] = None
+        comm.Barrier()
+        '''
+        for vector in self.vectors:
+
+            if vector != None
+                index = closest_center_index(vector)
+                self.clusters[index].append(vector)
+                vector = None
+        '''
     def update_centers(self):
         """Move `self.centers` to the centers of `self.clusters`.
 

@@ -11,6 +11,7 @@ comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
 
+'''
 path ='./txt'
 dataset =[]
 filecontent = []
@@ -31,35 +32,39 @@ data = comm.scatter(filecontentSplited, root=0)
 for d in data:
     j = os.path.join(path, d)
     d=open(j, 'r').read().replace('\n', '')
-    '''
-    if rank != 0:
-        
-        #comm.send(d,dest=0)
-    else:
-        dataset.append(d)
-    '''
-#if rank != 0:
-#    comm.send(None,dest=0)
-newdata = comm.gather(d, root = 0)
-#dataset = dataset.append(d)
+''' 
 
-if rank == 0:
-    #while True:
-        #data = comm.recv(source=MPI.ANY_SOURCE)
-        #if data == None:
-        #    print "paso algo"
-        #    break
-        dataset.append(newdata)
-        print dataset
-        num_clusters =8
-        cluster_paragraphs(dataset, num_clusters,filecontent)
-        clusters = cluster_paragraphs(dataset, num_clusters,filecontent)
-        cont = 0
-        for group in clusters:
-            print('\nGroup {0}'.format(cont))
-            print '\n'.join(t for t in clusters[cont])
-            cont = cont + 1
-        print '\n\n\n'
-      
+#Parte para ver todos los archivos tipo txt y guardarlos en una lista
+
+dataset =[]
+filecontent = []
+path ='./txt'
+files = [f for f in os.listdir(path) if os.path.split(f)]
+
+for f in files:
+    if f.endswith(".txt"):
+        filecontent.append(f)
+#Vamos a ver como pasar el contenido del txt para poder analizarlo
+
+for f in filecontent:
+    j = os.path.join(path, f)
+    with open(j, 'r') as myfile:
+        data=myfile.read().replace('\n', '')
+        dataset.append(data)
+    
+num_clusters = 4
+cluster_paragraphs(dataset, num_clusters,filecontent)
+clusters = cluster_paragraphs(dataset, num_clusters,filecontent)
+
+#newdata = comm.gather(data, root = 0)
+cont = 0 #usado para identificar el numero de los subgrupos
+
+for group in clusters:
+    print('\nGroup {0}'.format(cont))
+    print '\n'.join(t for t in clusters[cont])
+    cont = cont + 1
+print '\n\n\n'
+
+
 print("Rank ",rank," The execution time was %s seconds" % (time.time() - start_time))
 #print dataset
