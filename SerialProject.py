@@ -23,7 +23,7 @@ for f in filecontent:
 		dataset.append(data)
 #Luego de obtener el texto de cada documento se pasa a un vector con el cual analizaremos la similaridad
 
-num_clusters =8
+num_clusters = 4
 cluster_paragraphs(dataset, num_clusters,filecontent)
 clusters = cluster_paragraphs(dataset, num_clusters,filecontent)
 

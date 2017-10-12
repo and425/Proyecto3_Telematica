@@ -16,12 +16,11 @@ class KMeans(object):
     """K-Means clustering. Uses cosine similarity as the distance function."""
 
     def __init__(self, k, vectors):
-        print "im rank", rank, "with vector size", len(vectors)
         assert len(vectors) >= k
         self.centers = random.sample(vectors, k)
         self.clusters = [[] for c in self.centers]
         self.vectors = vectors
-        comm.Barrier()
+        #comm.Barrier()
 
     def update_clusters(self):
         """Determine which cluster center each `self.vector` is closest to."""
@@ -31,15 +30,15 @@ class KMeans(object):
             center = max(self.centers, key=similarity_to_vector)
             return self.centers.index(center)
 
-        self.clusters = [[] for c in self.centers]    
+        self.clusters = [[] for c in self.centers]
+
+        
 
         pos = rank
         while pos < len(self.vectors):
-            if self.vectors[pos] != None:
-                index = closest_center_index(self.vectors[pos])
-                self.clusters[index].append(self.vectors[pos])
-                pos += size
-                #self.vectors[pos] = None
+            index = closest_center_index((self.vectors)[pos])
+            self.clusters[index].append((self.vectors)[pos])
+            pos += size
         comm.Barrier()
         '''
         for vector in self.vectors:
@@ -71,6 +70,7 @@ class KMeans(object):
         self.update_clusters()
         while self.update_centers():
             self.update_clusters()
+        comm.Barrier()
 
 
 
