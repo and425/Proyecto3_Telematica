@@ -61,23 +61,23 @@ comm.Barrier()
 cont = 0 #usado para identificar el numero de los subgrupos
 
 aux = ""
-
+"""
 for t in clusters:
     if t != None:
         for f in t:
             aux = aux, f
 
 data = comm.gather(aux, root = 0)
+"""
+if rank == 0:
+    for group in clusters:
+        print('\nGroup {0}'.format(cont))
+        print '\n'.join(t for t in clusters[cont])
+        print "------"
+        cont = cont + 1
+    print '\n\n\n'
 
-'''
-for group in clusters:
-    print('\nGroup {0}'.format(cont))
-    print '\n'.join(t for t in clusters[cont])
-    print "------"
-    cont = cont + 1
-print '\n\n\n'
-'''
-
+"""
 if rank == 0:
     for info in data:
         print('\nGroup {0}'.format(cont))
@@ -85,7 +85,7 @@ if rank == 0:
         print "------"
         cont = cont + 1
 print '\n\n\n'
-
+"""
 #$comm.Barrier()
 
 print("Rank ",rank," The execution time was %s seconds" % (time.time() - start_time))
