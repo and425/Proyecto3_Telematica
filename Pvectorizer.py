@@ -1,24 +1,35 @@
+from mpi4py import MPI
 from collections import defaultdict
 import re
-
 from similarity import similarity
 from Pk_means import KMeans
-
+comm = MPI.COMM_WORLD
+rank = comm.Get_rank()
+size = comm.Get_size()
 
 def word_frequencies(word_vector):
     """What percent of the time does each word in the vector appear?
-
     Returns a dictionary mapping each word to its frequency.
-
     """
+    
     num_words = len(word_vector)
     frequencies = defaultdict(float)
+    
+    if rank == 0:
+        data = word_vector
+    else:
+        data = None
+    data = comm.bcast(data,root = 0)
+
+    for word in data:
+        frequencies[word] += 1.0/num_words
+    return dict(frequencies)
+    '''
     for word in word_vector:
         frequencies[word] += 1.0 / num_words
 
     return dict(frequencies)
-
-
+    '''
 def compare_vectors(word_vector1, word_vector2):
     """Numerical similarity between lists of words. Higher is better.
 

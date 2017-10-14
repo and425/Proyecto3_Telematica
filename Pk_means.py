@@ -32,14 +32,20 @@ class KMeans(object):
 
         self.clusters = [[] for c in self.centers]
 
-        
-
+        if rank == 0:
+            info = self.clusters
+        else:
+            info = None
+        info = comm.bcast(info,root=0)
         pos = rank
         while pos < len(self.vectors):
-            index = closest_center_index((self.vectors)[pos])
-            self.clusters[index].append((self.vectors)[pos])
+            vector = (self.vectors)[pos]
+            index = closest_center_index(vector)
+            if vector != None:
+                info[index].append(vector)
             pos += size
         comm.Barrier()
+        self.clusters = info
         '''
         for vector in self.vectors:
 
@@ -54,6 +60,34 @@ class KMeans(object):
         Return True if centers moved, else False.
 
         """
+        '''
+        if rank == 0:
+            new_centers = []
+            pos = rank
+            while pos < len(self.clusters):
+                cluster = self.clusters[pos]
+                center = [average(ci) for ci in zip(*cluster)]
+                new_centers.append(center)
+                pos += size
+        else:
+            new_centers = []
+        comm.Barrier()
+        data = comm.bcast(self.clusters, root=0)
+        temp_centers = []
+
+        if rank != 0:
+            pos = rank
+            while pos < len(data):
+                cluster = data[pos]
+                center = [average(ci) for ci in zip(*cluster)]
+                temp_centers.append(center)
+                pos += size
+        for x in temp_centers:
+            comm.send(x,dest=0,tag=rank)
+        if rank == 0:
+            point = comm.recv(source = MPI.ANY_SOURCE, tag = MPI.ANY_TAG)
+        comm.Barrier()
+        '''
         new_centers = []
         for cluster in self.clusters:
             center = [average(ci) for ci in zip(*cluster)]
@@ -64,7 +98,7 @@ class KMeans(object):
 
         self.centers = new_centers
         return True
-
+        
     def main_loop(self):
         """Perform k-means clustering."""
         self.update_clusters()
