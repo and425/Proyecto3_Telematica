@@ -1,4 +1,10 @@
-#!/bin/sh
+#!/bin/bash
+
+#SBATCH --job-name=Proyecto3_Telematica
+#SBATCH --output=output.txt
+#SBATCH --time=03:00:00
+#SBATCH --partition=estudiantes
+#SBATCH --ntasks=10
 
 usage()
 {
