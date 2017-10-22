@@ -6,7 +6,7 @@
 3. Para correr el programa se puede usar los siguientes comandos 
    * Serial
        ```
-        $ python SerialProject.py
+        $ python ./SerialProject.py
        ```
    * Paralelo 
        ```
