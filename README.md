@@ -5,14 +5,22 @@
     2. Ingrese a la carpeta del proyecto y cree una carpeta llamada txt, en esta carpeta ponga los archivos que desee agrupar.
     3. Para correr el programa se puede usar los siguientes comandos 
         * Serial
-            ```$ python SerialProject.py```
+            ```
+            $ python SerialProject.py
+            ```
         * Paralelo 
-            ```mpiexec -np "# nucleos" python ./ParallelProject.py```
+            ```
+            mpiexec -np "# nucleos" python ./ParallelProject.py
+            ```
     También puede hacer uso del archivo clustering.sh el cual sería:
         * Serial
-            ```$ ./clustering.sh -s```
+            ```
+            $ ./clustering.sh -s
+            ```
         * Paralelo
-            ```$ ./clustering.sh -p "# nucleos"```
+            ```
+            $ ./clustering.sh -p "# nucleos"
+            ```
     4. Posteriormente los resultados de agrupación y el tiempo que tomo el proceso serán impresos en su terminal.
 
 
